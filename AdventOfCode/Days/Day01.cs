@@ -5,9 +5,9 @@ namespace AdventOfCode.Days
 {
     public class Day01 : Day
     {
-        public override (string, string) Run()
+        public override (string, string) Run(string path)
         {
-            var input = "Inputs/01.txt".ReadLinesAsInt();
+            var input = path.ReadLinesAsInt();
             // ReSharper disable twice PossibleMultipleEnumeration
             return (Part1(input).ToString(), Part2(input).ToString());
         }

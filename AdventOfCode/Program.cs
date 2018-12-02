@@ -11,15 +11,17 @@ namespace AdventOfCode
         {
             var days = new Day[]
             {
-                new Day01()
+                new Day01(),
             };
             var sw = new Stopwatch();
             foreach (var day in days)
             {
+                var name = day.ToString().Split(".").LastOrDefault();
+                var inputPath = $"Inputs/{name}.txt";
                 sw.Start();
-                var (part1, part2) = day.Run();
+                var (part1, part2) = day.Run(inputPath);
                 sw.Stop();
-                Console.WriteLine($"{day.ToString().Split(".").LastOrDefault()}: {sw.Elapsed:g}");
+                Console.WriteLine($"{name}: {sw.Elapsed:g}");
                 Console.WriteLine($"  Part 1: {part1}");
                 Console.WriteLine($"  Part 2: {part2}");
                 sw.Reset();
