@@ -7,23 +7,23 @@ namespace AdventOfCode.Days
     {
         public override (string, string) Run()
         {
-            var array = "Inputs/01.txt".ReadLinesAsInt().ToArray();
-            return (Part1(array).ToString(), Part2(array).ToString());
+            var input = "Inputs/01.txt".ReadLinesAsInt();
+            // ReSharper disable twice PossibleMultipleEnumeration
+            return (Part1(input).ToString(), Part2(input).ToString());
         }
 
         public static int Part1(IEnumerable<int> input) =>
             input.Sum();
 
-        public static int Part2(int[] input)
+        public static int Part2(IEnumerable<int> input)
         {
-            var map = new HashSet<int>(new[]{0});
+            var set = new HashSet<int>(new[]{0});
             var freq = 0;
-            for (var i = 0; ; i = (i + 1) % input.Length)
-            {
-                freq += input[i];
-                if (!map.Add(freq))
-                    return freq;
-            }
+            foreach (var change in input.Cyclic())
+                if (!set.Add(freq += change))
+                    break;
+
+            return freq;
         }
     }
 }

@@ -14,5 +14,31 @@ namespace AdventOfCode
 
         public static IEnumerable<int> ReadLinesAsInt(this string path) =>
             File.ReadLines(path).Select(int.Parse);
+
+        public static IEnumerable<T> Cyclic<T>(this IEnumerable<T> source)
+        {
+            IEnumerator<T> enu = null;
+            try
+            {
+                // ReSharper disable once PossibleMultipleEnumeration
+                enu = source.GetEnumerator();
+                if (!enu.MoveNext())
+                    yield break;
+                while (true)
+                {
+                    yield return enu.Current;
+                    if (enu.MoveNext())
+                        continue;
+                    enu.Dispose();
+                    // ReSharper disable once PossibleMultipleEnumeration
+                    enu = source.GetEnumerator();
+                    enu.MoveNext();
+                }
+            }
+            finally
+            {
+                enu?.Dispose();
+            }
+        }
     }
 }

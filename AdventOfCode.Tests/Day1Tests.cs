@@ -19,7 +19,7 @@ namespace AdventOfCode.Tests
                 ("-1, -2, -3", -6)
             };
             assertions.ForEach(((string Input, int Expected) x) =>
-                Assert.Equal(Day01.Part1(x.Input.SplitAsInt()), x.Expected));
+                Assert.Equal(x.Expected, Day01.Part1(x.Input.SplitAsInt())));
         }
         
         [Fact]
@@ -34,7 +34,7 @@ namespace AdventOfCode.Tests
                 ("+7, +7, -2, -7, -4", 14)
             };
             assertions.ForEach(((string Input, int Expected) x) =>
-                Assert.Equal(Day01.Part2(x.Input.SplitAsInt()), x.Expected));
+                Assert.Equal(x.Expected, Day01.Part2(x.Input.SplitAsInt())));
         }
     }
 }

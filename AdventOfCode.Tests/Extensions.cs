@@ -6,8 +6,8 @@ namespace AdventOfCode.Tests
 {
     public static class Extensions
     {
-        public static int[] SplitAsInt(this string input, string separator = ", ") =>
-            input.Split(separator).Select(int.Parse).ToArray();
+        public static IEnumerable<int> SplitAsInt(this string input, string separator = ", ") =>
+            input.Split(separator).Select(int.Parse);
 
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
