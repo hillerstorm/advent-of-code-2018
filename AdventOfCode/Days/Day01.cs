@@ -8,7 +8,6 @@ namespace AdventOfCode.Days
         public override (string, string) Run(string path)
         {
             var input = path.ReadLinesAsInt();
-            // ReSharper disable twice PossibleMultipleEnumeration
             return (Part1(input).ToString(), Part2(input).ToString());
         }
 

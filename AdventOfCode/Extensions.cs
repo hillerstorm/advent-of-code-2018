@@ -20,7 +20,6 @@ namespace AdventOfCode
             IEnumerator<T> enu = null;
             try
             {
-                // ReSharper disable once PossibleMultipleEnumeration
                 enu = source.GetEnumerator();
                 if (!enu.MoveNext())
                     yield break;
@@ -30,7 +29,6 @@ namespace AdventOfCode
                     if (enu.MoveNext())
                         continue;
                     enu.Dispose();
-                    // ReSharper disable once PossibleMultipleEnumeration
                     enu = source.GetEnumerator();
                     enu.MoveNext();
                 }

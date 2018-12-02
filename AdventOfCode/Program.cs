@@ -12,6 +12,7 @@ namespace AdventOfCode
             var days = new Day[]
             {
                 new Day01(),
+                new Day02(),
             };
             var sw = new Stopwatch();
             foreach (var day in days)
