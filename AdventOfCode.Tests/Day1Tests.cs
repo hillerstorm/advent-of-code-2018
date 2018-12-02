@@ -21,7 +21,7 @@ namespace AdventOfCode.Tests
             assertions.ForEach(((string Input, int Expected) x) =>
                 Assert.Equal(x.Expected, Day01.Part1(x.Input.SplitAsInt())));
         }
-        
+
         [Fact]
         public void TestPart2()
         {
