@@ -13,6 +13,7 @@ namespace AdventOfCode
             {
                 new Day01(),
                 new Day02(),
+                new Day03(),
             };
             var sw = new Stopwatch();
             foreach (var day in days)
