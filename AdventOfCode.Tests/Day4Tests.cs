@@ -13,8 +13,7 @@ namespace AdventOfCode.Tests
                 ("Inputs/Day04.txt", 240),
             };
             assertions.ForEach(((string Input, int Expected) x) =>
-                Assert.Equal(x.Expected,
-                    Day04.Part1(Day04.ParseTimestamps(x.Input.ReadLines()))));
+                Assert.Equal(x.Expected, Day04.Part1(x.Input.ReadLines())));
         }
 
         [Fact]
@@ -25,8 +24,7 @@ namespace AdventOfCode.Tests
                 ("Inputs/Day04.txt", 4455),
             };
             assertions.ForEach(((string Input, int Expected) x) =>
-                Assert.Equal(x.Expected,
-                    Day04.Part2(Day04.ParseTimestamps(x.Input.ReadLines()))));
+                Assert.Equal(x.Expected, Day04.Part2(x.Input.ReadLines())));
         }
     }
 }

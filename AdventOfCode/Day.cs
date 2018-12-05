@@ -1,7 +1,9 @@
+using System;
+
 namespace AdventOfCode
 {
     public abstract class Day
     {
-        public abstract (string, string) Run(string path);
+        public abstract (Func<string>, Func<string>) GetParts(string path);
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,13 +12,28 @@ namespace AdventOfCode.Days
             public IEnumerable<(int X, int Y)> Positions;
         }
 
-        public override (string, string) Run(string path)
+        public override (Func<string>, Func<string>) GetParts(string path)
         {
-            var input = ParseClaims(path.ReadLines());
-            return (Part1(input).ToString(), Part2(input));
+            var input = path.ReadLines();
+            return (
+                () => Part1(input).ToString(),
+                () => Part2(input)
+            );
         }
 
-        public static IEnumerable<Claim> ParseClaims(
+        public static int Part1(IEnumerable<string> input) =>
+            GetOverlap(ParseClaims(input)).Count;
+
+        public static string Part2(IEnumerable<string> input)
+        {
+            var claims = ParseClaims(input);
+            var overlap = GetOverlap(claims);
+            return claims
+                .First(x => !overlap.Overlaps(x.Positions))
+                .Id;
+        }
+
+        private static IEnumerable<Claim> ParseClaims(
             IEnumerable<string> lines) =>
             lines
                 .Select(x => new Claim
@@ -31,12 +47,6 @@ namespace AdventOfCode.Days
                     )
                 });
 
-        public static int Part1(IEnumerable<Claim> claims)
-        {
-            var overlap = GetOverlap(claims);
-            return overlap.Count;
-        }
-
         private static HashSet<(int X, int Y)> GetOverlap(IEnumerable<Claim> claims)
         {
             var unique = new HashSet<(int X, int Y)>();
@@ -47,14 +57,6 @@ namespace AdventOfCode.Days
                     overlap.Add(pos);
 
             return overlap;
-        }
-
-        public static string Part2(IEnumerable<Claim> claims)
-        {
-            var overlap = GetOverlap(claims);
-            return claims
-                .First(x => !overlap.Overlaps(x.Positions))
-                .Id;
         }
     }
 }

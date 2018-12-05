@@ -6,14 +6,17 @@ namespace AdventOfCode.Days
 {
     public class Day04 : Day
     {
-        public override (string, string) Run(string path)
+        public override (Func<string>, Func<string>) GetParts(string path)
         {
-            var input = ParseTimestamps(path.ReadLines());
-            return (Part1(input).ToString(), Part2(input).ToString());
+            var input = path.ReadLines();
+            return (
+                () => Part1(input).ToString(),
+                () => Part2(input).ToString()
+            );
         }
 
-        public static int Part1(IEnumerable<(int Id, HashSet<int> Asleep)> shifts) =>
-            shifts
+        public static int Part1(IEnumerable<string> input) =>
+            ParseTimestamps(input)
                 .GroupBy(x => x.Id, x => x.Asleep)
                 .Select(x => (
                     x.Key * x.SelectMany(y => y)
@@ -31,8 +34,8 @@ namespace AdventOfCode.Days
                 .Last()
                 .Item1;
 
-        public static int Part2(IEnumerable<(int Id, HashSet<int> Asleep)> shifts) =>
-            shifts
+        public static int Part2(IEnumerable<string> input) =>
+            ParseTimestamps(input)
                 .GroupBy(x => x.Id, x => x.Asleep)
                 .Select(x =>
                     x.SelectMany(y => y)
@@ -48,7 +51,7 @@ namespace AdventOfCode.Days
                 .Last()
                 .Item1;
 
-        public static IEnumerable<(int Id, HashSet<int> Asleep)> ParseTimestamps(IEnumerable<string> lines)
+        private static IEnumerable<(int Id, HashSet<int> Asleep)> ParseTimestamps(IEnumerable<string> lines)
         {
             var asleep = new HashSet<int>();
             int? currentGuardId = null;

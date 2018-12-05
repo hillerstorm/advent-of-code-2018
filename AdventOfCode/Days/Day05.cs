@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -9,10 +8,13 @@ namespace AdventOfCode.Days
     {
         private static readonly Regex Regexp = new Regex(@"(\p{L})((?!\1)(?i:\1))");
 
-        public override (string, string) Run(string path)
+        public override (Func<string>, Func<string>) GetParts(string path)
         {
             var input = path.ReadInput();
-            return (Part1(input).ToString(), Part2(input).ToString());
+            return (
+                () => Part1(input).ToString(),
+                () => Part2(input).ToString()
+            );
         }
 
         public static int Part1(string input)

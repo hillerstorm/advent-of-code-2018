@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -5,10 +6,13 @@ namespace AdventOfCode.Days
 {
     public class Day02 : Day
     {
-        public override (string, string) Run(string path)
+        public override (Func<string>, Func<string>) GetParts(string path)
         {
             var input = path.ReadLines();
-            return (Part1(input).ToString(), Part2(input));
+            return (
+                () => Part1(input).ToString(),
+                () => Part2(input)
+            );
         }
 
         public static int Part1(IEnumerable<string> boxIds)

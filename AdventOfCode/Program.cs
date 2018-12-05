@@ -18,17 +18,28 @@ namespace AdventOfCode
                 new Day05(),
             };
             var sw = new Stopwatch();
+            var part1Sw = new Stopwatch();
+            var part2Sw = new Stopwatch();
             foreach (var day in days)
             {
                 var name = day.ToString().Split(".").LastOrDefault();
                 var inputPath = $"Inputs/{name}.txt";
+                Console.WriteLine(name);
                 sw.Start();
-                var (part1, part2) = day.Run(inputPath);
+                var (part1Func, part2Func) = day.GetParts(inputPath);
+                part1Sw.Start();
+                var part1 = part1Func();
+                part1Sw.Stop();
+                Console.WriteLine($"  Part 1: {part1} ({part1Sw.Elapsed:g})");
+                part2Sw.Start();
+                var part2 = part2Func();
+                part2Sw.Stop();
                 sw.Stop();
-                Console.WriteLine($"{name}: {sw.Elapsed:g}");
-                Console.WriteLine($"  Part 1: {part1}");
-                Console.WriteLine($"  Part 2: {part2}");
+                Console.WriteLine($"  Part 2: {part2} ({part2Sw.Elapsed:g})");
+                Console.WriteLine($"---- total: {sw.Elapsed:g}");
                 sw.Reset();
+                part1Sw.Reset();
+                part2Sw.Reset();
             }
 
             Console.Read();
