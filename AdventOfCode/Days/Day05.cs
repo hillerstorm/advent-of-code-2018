@@ -28,6 +28,7 @@ namespace AdventOfCode.Days
             input
                 .ToLower()
                 .ToHashSet()
+                .AsParallel()
                 .Select(x =>
                     Part1(input.Replace(x.ToString(), string.Empty, StringComparison.InvariantCultureIgnoreCase)))
                 .OrderBy(x => x)
