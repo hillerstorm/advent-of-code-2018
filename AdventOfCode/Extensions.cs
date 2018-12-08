@@ -17,26 +17,14 @@ namespace AdventOfCode
 
         public static IEnumerable<T> Cyclic<T>(this IEnumerable<T> source)
         {
-            IEnumerator<T> enu = null;
-            try
+            var arr = source.ToArray();
+            var i = 0;
+            while (true)
             {
-                enu = source.GetEnumerator();
-                if (!enu.MoveNext())
-                    yield break;
-                while (true)
-                {
-                    yield return enu.Current;
-                    if (enu.MoveNext())
-                        continue;
-                    enu.Dispose();
-                    enu = source.GetEnumerator();
-                    enu.MoveNext();
-                }
+                yield return arr[i % arr.Length];
+                i++;
             }
-            finally
-            {
-                enu?.Dispose();
-            }
+            // ReSharper disable once IteratorNeverReturns
         }
 
         public static IEnumerable<(int X, int Y)> Square(int x, int y, int width, int height) =>
