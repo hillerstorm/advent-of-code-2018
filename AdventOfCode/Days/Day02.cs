@@ -36,7 +36,7 @@ namespace AdventOfCode.Days
         public static string Part2(IEnumerable<string> boxIds) =>
             boxIds
                 .SelectMany(x =>
-                    Enumerable.Range(0, x.Length)
+                    0.To(x.Length)
                         .Select(y => $"{x.Substring(0, y)}#{x.Substring(y + 1)}"))
                 .GroupBy(x => x)
                 .First(x => x.Count() == 2)

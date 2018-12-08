@@ -6,12 +6,6 @@ namespace AdventOfCode.Days
 {
     public class Day03 : Day
     {
-        public struct Claim
-        {
-            public string Id;
-            public IEnumerable<(int X, int Y)> Positions;
-        }
-
         public override (Func<string>, Func<string>) GetParts(string path)
         {
             var input = path.ReadLines();
@@ -33,6 +27,12 @@ namespace AdventOfCode.Days
                 .Id;
         }
 
+        private struct Claim
+        {
+            public string Id;
+            public (int X, int Y)[] Positions;
+        }
+
         private static IEnumerable<Claim> ParseClaims(IEnumerable<string> lines) =>
             lines
                 .Select(x => new Claim
@@ -43,7 +43,7 @@ namespace AdventOfCode.Days
                         int.Parse(string.Concat(x.Skip(x.IndexOf(",") + 1).TakeWhile(char.IsDigit))),
                         int.Parse(string.Concat(x.Skip(x.IndexOf(":") + 2).TakeWhile(char.IsDigit))),
                         int.Parse(string.Concat(x.Skip(x.IndexOf("x") + 1).TakeWhile(char.IsDigit)))
-                    )
+                    ).ToArray()
                 });
 
         private static HashSet<(int X, int Y)> GetOverlap(IEnumerable<Claim> claims)
