@@ -20,7 +20,7 @@ namespace AdventOfCode.Days
             var valid = boxIds
                 .Select(x =>
                 {
-                    var groups = x.ToArray().GroupBy(y => y);
+                    var groups = x.ToArray().GroupBy(y => y).ToArray();
                     return new
                     {
                         Twos = groups.Count(g => g.Count() == 2) > 0,

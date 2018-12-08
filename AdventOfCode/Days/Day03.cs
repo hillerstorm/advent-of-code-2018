@@ -26,15 +26,14 @@ namespace AdventOfCode.Days
 
         public static string Part2(IEnumerable<string> input)
         {
-            var claims = ParseClaims(input);
+            var claims = ParseClaims(input).ToArray();
             var overlap = GetOverlap(claims);
             return claims
                 .First(x => !overlap.Overlaps(x.Positions))
                 .Id;
         }
 
-        private static IEnumerable<Claim> ParseClaims(
-            IEnumerable<string> lines) =>
+        private static IEnumerable<Claim> ParseClaims(IEnumerable<string> lines) =>
             lines
                 .Select(x => new Claim
                 {
