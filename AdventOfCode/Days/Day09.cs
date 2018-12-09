@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace AdventOfCode.Days
 {
@@ -15,14 +16,17 @@ namespace AdventOfCode.Days
             );
         }
 
-        public static int Part1(string input)
+        public static BigInteger Part1(string input)
         {
             var (players, maxMarbles) = ParseInput(input);
             return GetMaxScore(maxMarbles, players);
         }
 
-        public static int Part2(string input) =>
-            -1;
+        public static BigInteger Part2(string input)
+        {
+            var (players, maxMarbles) = ParseInput(input);
+            return GetMaxScore(maxMarbles * 100, players);
+        }
 
         private static (int, int) ParseInput(string input) => (
             int.Parse(
@@ -39,22 +43,22 @@ namespace AdventOfCode.Days
             )
         );
 
-        private static int GetMaxScore(int maxMarbles, int players)
+        private static BigInteger GetMaxScore(int maxMarbles, int players)
         {
-            var marbles = new List<int>(new[] {0});
-            var scores = new Dictionary<int, int>();
-            var currentMarble = 0;
+            maxMarbles = maxMarbles - maxMarbles % 23;
+            var marbles = new Queue<int>(new[] {0});
+            var scores = new Dictionary<int, BigInteger>();
             for (var i = 1; i <= maxMarbles; i++)
             {
-                int newIndex;
                 if (i % 23 == 0)
                 {
-                    newIndex = currentMarble - 7;
+                    var newIndex = marbles.Count - 8;
                     if (newIndex < 0)
                         newIndex = marbles.Count + newIndex;
-                    var valueAtIndex = marbles[newIndex];
-                    var score = i + valueAtIndex;
-                    marbles.RemoveAt(newIndex);
+                    for (var x = 0; x < newIndex; x++)
+                        marbles.Enqueue(marbles.Dequeue());
+                    var score = i + marbles.Dequeue();
+                    marbles.Enqueue(marbles.Dequeue());
                     var player = i % players;
                     if (scores.ContainsKey(player))
                         scores[player] += score;
@@ -63,13 +67,9 @@ namespace AdventOfCode.Days
                 }
                 else
                 {
-                    newIndex = marbles.Count == 1 ? 1 : currentMarble + 2;
-                    if (newIndex > marbles.Count)
-                        newIndex = newIndex % marbles.Count;
-                    marbles.Insert(newIndex, i);
+                    marbles.Enqueue(marbles.Dequeue());
+                    marbles.Enqueue(i);
                 }
-
-                currentMarble = newIndex;
             }
 
             return scores.Max(x => x.Value);
