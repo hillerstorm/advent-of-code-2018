@@ -36,4 +36,8 @@
         </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Nito.Collections.Deque" Version="1.0.4" />
+    </ItemGroup>
+
 </Project>

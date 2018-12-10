@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using AdventOfCode.Days;
 using Xunit;
 
@@ -18,7 +15,7 @@ namespace AdventOfCode.Tests
             assertions.ForEach(((string Input, int Expected) x) =>
                 Assert.Equal(x.Expected, Day02.Part1(x.Input.Split(", "))));
         }
-        
+
         [Fact]
         public void TestPart2()
         {

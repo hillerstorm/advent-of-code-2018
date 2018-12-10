@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
+using Nito.Collections;
 
 namespace AdventOfCode.Days
 {
@@ -16,13 +15,13 @@ namespace AdventOfCode.Days
             );
         }
 
-        public static BigInteger Part1(string input)
+        public static long Part1(string input)
         {
             var (players, maxMarbles) = ParseInput(input);
             return GetMaxScore(maxMarbles, players);
         }
 
-        public static BigInteger Part2(string input)
+        public static long Part2(string input)
         {
             var (players, maxMarbles) = ParseInput(input);
             return GetMaxScore(maxMarbles * 100, players);
@@ -43,36 +42,28 @@ namespace AdventOfCode.Days
             )
         );
 
-        private static BigInteger GetMaxScore(int maxMarbles, int players)
+        private static long GetMaxScore(int maxMarbles, int players)
         {
             maxMarbles = maxMarbles - maxMarbles % 23;
-            var marbles = new Queue<int>(new[] {0});
-            var scores = new Dictionary<int, BigInteger>();
+            var marbles = new Deque<int>(new[] {0});
+            var scores = new long[players];
             for (var i = 1; i <= maxMarbles; i++)
             {
                 if (i % 23 == 0)
                 {
-                    var newIndex = marbles.Count - 8;
-                    if (newIndex < 0)
-                        newIndex = marbles.Count + newIndex;
-                    for (var x = 0; x < newIndex; x++)
-                        marbles.Enqueue(marbles.Dequeue());
-                    var score = i + marbles.Dequeue();
-                    marbles.Enqueue(marbles.Dequeue());
-                    var player = i % players;
-                    if (scores.ContainsKey(player))
-                        scores[player] += score;
-                    else
-                        scores.Add(player, score);
+                    marbles.Rotate(-7);
+                    var score = i + marbles.RemoveFromBack();
+                    marbles.AddToBack(marbles.RemoveFromFront());
+                    scores[i % players] += score;
                 }
                 else
                 {
-                    marbles.Enqueue(marbles.Dequeue());
-                    marbles.Enqueue(i);
+                    marbles.AddToBack(marbles.RemoveFromFront());
+                    marbles.AddToBack(i);
                 }
             }
 
-            return scores.Max(x => x.Value);
+            return scores.Max();
         }
     }
 }

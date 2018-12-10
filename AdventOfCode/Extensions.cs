@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Nito.Collections;
 
 namespace AdventOfCode
 {
@@ -38,5 +40,18 @@ namespace AdventOfCode
 
         public static IEnumerable<int> To(this int from, int max) =>
             Enumerable.Range(from, max);
+
+        public static void Rotate<T>(this Deque<T> source, long offset)
+        {
+            if (offset < 0)
+            {
+                offset = Math.Abs(offset);
+                for (long i = 0; i < offset; i++)
+                    source.AddToFront(source.RemoveFromBack());
+            }
+            else if (offset > 0)
+                for (long i = 0; i < offset; i++)
+                    source.AddToBack(source.RemoveFromFront());
+        }
     }
 }
