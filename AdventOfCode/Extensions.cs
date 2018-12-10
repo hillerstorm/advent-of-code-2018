@@ -53,5 +53,12 @@ namespace AdventOfCode
                 for (long i = 0; i < offset; i++)
                     source.AddToBack(source.RemoveFromFront());
         }
+
+        public static IEnumerable<IEnumerable<T1>> PartitionBy<T1>(this IEnumerable<T1> source, int width)
+        {
+            var entries = source.LongCount() / width;
+            for (var i = 0; i < entries; i++)
+                yield return source.Skip(i * width).Take(width);
+        }
     }
 }
