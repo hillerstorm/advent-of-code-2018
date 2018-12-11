@@ -20,7 +20,7 @@ namespace AdventOfCode.Days
             );
         }
 
-        public static string Part1(IEnumerable<string> input, bool createImage = true)
+        public static string Part1(IEnumerable<string> input, bool createImage = false)
         {
             var pixels = ParsePixels(input);
             var (_, minX, minY, width, height) = GetMinValues(pixels);
