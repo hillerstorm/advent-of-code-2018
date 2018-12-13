@@ -17,7 +17,7 @@ namespace AdventOfCode.Tests
                 Assert.Equal(x.Expected, Day11.Part1(x.SerialNumber)));
         }
 
-        [Fact]
+        [Fact(Skip = "Slow")]
         public void TestPart2()
         {
             var assertions = new[]

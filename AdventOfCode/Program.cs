@@ -15,7 +15,7 @@ namespace AdventOfCode
                 new Day02(),
                 new Day03(),
                 new Day04(),
-                new Day05(),
+                //new Day05(), // Really slow...
                 new Day06(),
                 new Day07(),
                 new Day08(),
@@ -23,6 +23,7 @@ namespace AdventOfCode
                 new Day10(),
                 new Day11(),
                 new Day12(),
+                new Day13(),
             };
             var sw = new Stopwatch();
             var part1Sw = new Stopwatch();
