@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using RoyT.AStar;
 
 namespace AdventOfCode.Days
 {
@@ -26,30 +25,31 @@ namespace AdventOfCode.Days
         private static int GetOutcome(IEnumerable<string> input, bool failOnElfDeath)
         {
             var arr = input.ToArray();
-            var gridArr = arr.SelectMany(x => x.ToCharArray()).ToArray();
+            var gridArr = arr.SelectMany(x => x.ToCharArray()).Select((y, idx) => (y, idx)).Where(y => y.y != '.').ToArray();
             var height = arr.Length;
             var width = arr[0].Length;
+            var manhattan = Manhattan(width, height);
             var walls = gridArr
-                .Select((x, i) => (x, i))
-                .Where(x => x.x == '#')
-                .Select(x => x.i).ToArray();
-            var unitArr = gridArr
-                .Select((x, i) => (x, i))
-                .Where(x => x.x == 'G' || x.x == 'E')
-                .ToArray();
+                .Where(x => x.Item1 == '#')
+                .Select(x => x.idx)
+                .ToHashSet();
+            walls = walls
+                .Where(x => x % width > 0 && !walls.Contains(x - 1) ||
+                            x % width < width - 1 && !walls.Contains(x + 1) ||
+                            x / height > 0 && !walls.Contains(x - width) ||
+                            x / height < height - 1 && !walls.Contains(x + width))
+                .ToHashSet();
             var elfAttackPower = failOnElfDeath ? 4 : 3;
             while (true)
             {
-                var grid = new Grid(width, height);
-                foreach (var idx in walls)
-                    grid.BlockCell(new Position(idx % width, idx / height));
-                var units = unitArr
+                var units = gridArr
+                    .Where(x => x.Item1 == 'G' || x.Item1 == 'E')
                     .Select(x =>
-                        x.x == 'G'
-                            ? (Unit) new Goblin(x.i, width, height)
-                            : (Unit) new Elf(x.i, width, height, elfAttackPower))
+                        x.Item1 == 'G'
+                            ? (Unit) new Goblin(x.idx, width, height)
+                            : (Unit) new Elf(x.idx, width, height, elfAttackPower))
                     .ToArray();
-                var (success, outcome) = TryGetOutcome(grid, units, walls, width, height, failOnElfDeath);
+                var (success, outcome) = TryGetOutcome(units, walls, width, manhattan, failOnElfDeath);
                 if (failOnElfDeath && !success)
                     elfAttackPower++;
                 else
@@ -57,16 +57,35 @@ namespace AdventOfCode.Days
             }
         }
 
-        private static (bool Success, int Outcome) TryGetOutcome(Grid grid, Unit[] units, int[] walls, int width, int height, bool failOnElfDeath)
+        private static Func<int, IEnumerable<int>> GetNeighbours(int width, ICollection<int> blockers) => x =>
+            new[]
+            {
+                x - 1,
+                x + 1,
+                x - width,
+                x + width
+            }.Where(y => !blockers.Contains(y));
+
+        private static Func<int, int, float> Manhattan(int width, int height) => (x, y) =>
+            Math.Abs(y % width - x % width) + Math.Abs(y / height - x / height);
+
+        private static (bool Success, int Outcome) TryGetOutcome(
+            Unit[] units,
+            HashSet<int> walls,
+            int width,
+            Func<int, int, float> manhattan,
+            bool failOnElfDeath)
         {
+            var goblins = units.OfType<Goblin>().ToArray<Unit>();
+            var elves = units.OfType<Elf>().ToArray<Unit>();
             var rounds = 0;
             while (true)
             {
                 foreach (var unit in units.OrderBy(x => x.Index).Where(x => x.Alive))
                 {
                     var enemies = unit is Goblin
-                        ? units.OfType<Elf>().Where(x => x.Alive).ToArray<Unit>()
-                        : units.OfType<Goblin>().Where(x => x.Alive).ToArray<Unit>();
+                        ? elves.Where(x => x.Alive).ToArray()
+                        : goblins.Where(x => x.Alive).ToArray();
 
                     if (enemies.Length == 0)
                         return (true, rounds * units.Sum(x => x.Alive ? x.HitPoints : 0));
@@ -74,73 +93,38 @@ namespace AdventOfCode.Days
                     var enemy = unit.GetClosestEnemy(enemies);
                     if (enemy != null)
                     {
-                        unit.Attack(enemy);
-                        if (!enemy.Alive && failOnElfDeath && enemy is Elf)
+                        enemy.HitPoints -= unit.AttackPower;
+                        if (failOnElfDeath && enemy is Elf && !enemy.Alive)
                             return (false, -1);
 
                         continue;
                     }
 
-                    var toBlock = unit is Goblin
-                        ? units.OfType<Goblin>()
-                            .Where(x => x.Alive)
-                            .Except(new[] {unit})
-                            .ToArray()
-                        : units.OfType<Elf>()
-                            .Where(x => x.Alive)
-                            .Except(new[] {unit})
-                            .ToArray();
-
-                    foreach (var ally in toBlock)
-                        grid.BlockCell(new Position(ally.X, ally.Y));
-
-                    var path = new[]
-                        {
-                            unit.Index - 1,
-                            unit.Index + 1,
-                            unit.Index - width,
-                            unit.Index + width
-                        }
-                        .Where(z => walls.All(w => w != z) && units.Where(u => u.Alive).All(u => u.Index != z))
-                        .SelectMany(x => enemies
-                            .SelectMany(y => new[]
-                                {
-                                    y.Index - 1,
-                                    y.Index + 1,
-                                    y.Index - width,
-                                    y.Index + width
-                                }
-                                .Where(z => walls.All(w => w != z) && units.Where(u => u.Alive).All(u => u.Index != z))
-                                .Select(z => grid.GetPath(
-                                    new Position(x % width, x / height),
-                                    new Position(z % width, z / height),
-                                    MovementPatterns.LateralOnly
-                                ))
-                            ))
+                    var neighbours = GetNeighbours(width, walls.Union(units.Where(x => x.Alive).Select(x => x.Index)).ToHashSet());
+                    var path = neighbours(unit.Index)
+                        .Pairs(enemies.SelectMany(x => neighbours(x.Index)))
+                        .Select(x =>
+                            x.A == x.B
+                                ? new[] {x.A}
+                                : PathFinder.FindPath(x.A, x.B, neighbours, manhattan))
                         .Where(x => x.Length > 0)
                         .OrderBy(x => x.Length)
-                        .ThenBy(x => x[x.Length - 1].Y)
-                        .ThenBy(x => x[x.Length - 1].X)
-                        .ThenBy(y => y[0].Y)
-                        .ThenBy(y => y[0].X)
+                        .ThenBy(x => x[x.Length - 1])
+                        .ThenBy(x => x[0])
                         .FirstOrDefault();
 
-                    if (path != null)
-                    {
-                        unit.X = path[0].X;
-                        unit.Y = path[0].Y;
+                    if (path == null)
+                        continue;
 
-                        enemy = unit.GetClosestEnemy(enemies);
-                        if (enemy != null)
-                        {
-                            unit.Attack(enemy);
-                            if (!enemy.Alive && failOnElfDeath && enemy is Elf)
-                                return (false, -1);
-                        }
-                    }
+                    unit.Index = path[0];
 
-                    foreach (var ally in toBlock)
-                        grid.UnblockCell(new Position(ally.X, ally.Y));
+                    enemy = unit.GetClosestEnemy(enemies);
+                    if (enemy == null)
+                        continue;
+
+                    enemy.HitPoints -= unit.AttackPower;
+                    if (failOnElfDeath && enemy is Elf && !enemy.Alive)
+                        return (false, -1);
                 }
 
                 rounds++;
@@ -169,7 +153,6 @@ namespace AdventOfCode.Days
         {
             private readonly int _width;
             private readonly int _height;
-            private int _index;
 
             protected Unit(char type, int index, int width, int height)
             {
@@ -181,52 +164,12 @@ namespace AdventOfCode.Days
             }
 
             public bool Alive => HitPoints > 0;
-            public int HitPoints { get; private set; }
-
-            public int Index
-            {
-                get => _index;
-                private set
-                {
-                    if (value < 0 || value >= _width * _height)
-                        throw new IndexOutOfRangeException();
-
-                    _index = value;
-                }
-            }
-
-            public int X
-            {
-                get => Index % _width;
-                set
-                {
-                    if (value < 0 || value >= _width)
-                        throw new IndexOutOfRangeException();
-
-                    Index = Index - X + value;
-                }
-            }
-
-            public int Y
-            {
-                get => Index / _height;
-                set
-                {
-                    if (value < 0 || value >= _height)
-                        throw new IndexOutOfRangeException();
-
-                    Index = value * _height + X;
-                }
-            }
-
+            public int HitPoints { get; set; }
+            public int X => Index % _width;
+            public int Y => Index / _height;
             public char Type { get; }
-
-            protected abstract int AttackPower { get; }
-
-            public void Attack(Unit enemy)
-            {
-                enemy.HitPoints -= AttackPower;
-            }
+            public int Index { get; set; }
+            public abstract int AttackPower { get; }
 
             private bool IsAdjacent(Unit enemy) =>
                 enemy.Index == Index - 1 ||
@@ -252,10 +195,10 @@ namespace AdventOfCode.Days
             {
             }
 
-            protected override int AttackPower => 3;
+            public override int AttackPower => 3;
         }
 
-        private class Elf : Unit
+        private sealed class Elf : Unit
         {
             public Elf(int index, int width, int height, int attackPower)
                 : base('E', index, width, height)
@@ -263,7 +206,7 @@ namespace AdventOfCode.Days
                 AttackPower = attackPower;
             }
 
-            protected override int AttackPower { get; }
+            public override int AttackPower { get; }
         }
     }
 }

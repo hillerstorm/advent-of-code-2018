@@ -59,7 +59,6 @@
 
     <ItemGroup>
       <PackageReference Include="Nito.Collections.Deque" Version="1.0.4" />
-      <PackageReference Include="RoyT.AStar" Version="2.1.0" />
       <PackageReference Include="SkiaSharp" Version="1.68.0" />
     </ItemGroup>
 

@@ -35,7 +35,7 @@ namespace AdventOfCode
         public static IEnumerable<(int X, int Y)> Square(int x, int y, int width, int height) =>
             x.To(width).Pairs(y.To(height));
 
-        private static IEnumerable<(T1, T2)> Pairs<T1, T2>(this IEnumerable<T1> source, IEnumerable<T2> other) =>
+        public static IEnumerable<(T1 A, T2 B)> Pairs<T1, T2>(this IEnumerable<T1> source, IEnumerable<T2> other) =>
             source.SelectMany(x => other.Select(y => (x, y)));
 
         public static IEnumerable<int> To(this int from, int max) =>
