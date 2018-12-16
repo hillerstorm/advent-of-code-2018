@@ -18,7 +18,7 @@ namespace AdventOfCode
             File.ReadLines(path).Select(int.Parse);
 
         public static IEnumerable<int> SplitAsInt(this string input, string separator = ", ") =>
-            input.Split(separator).Select(int.Parse);
+            input.Split(separator, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
 
         public static IEnumerable<T> Cyclic<T>(this IEnumerable<T> source)
         {
