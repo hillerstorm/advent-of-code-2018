@@ -27,6 +27,7 @@ namespace AdventOfCode
                 new Day14(),
                 //new Day15(), // Slow, for now
                 new Day16(),
+                new Day17(),
             };
             var sw = new Stopwatch();
             var part1Sw = new Stopwatch();
