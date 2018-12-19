@@ -16,7 +16,7 @@ namespace AdventOfCode.Days
             );
         }
 
-        private static readonly Dictionary<string, Action<int[], int, int, int>> Instructions = new Dictionary<string, Action<int[], int, int, int>>
+        public static readonly Dictionary<string, Action<int[], int, int, int>> Instructions = new Dictionary<string, Action<int[], int, int, int>>
         {
             // (add register) stores into register C the result of adding register A and register B.
             {"addr", (reg, a, b, c) =>
