@@ -30,6 +30,7 @@ namespace AdventOfCode
                 new Day17(),
                 new Day18(),
                 new Day19(),
+                //new Day20(), // Really slow...
             };
             var sw = new Stopwatch();
             var part1Sw = new Stopwatch();
@@ -55,8 +56,6 @@ namespace AdventOfCode
                 part1Sw.Reset();
                 part2Sw.Reset();
             }
-
-            Console.Read();
         }
     }
 }

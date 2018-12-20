@@ -64,10 +64,14 @@
         <None Update="Inputs\Day19.txt">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="Inputs\Day20.txt">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Nito.Collections.Deque" Version="1.0.4" />
+      <PackageReference Include="OptimizedPriorityQueue" Version="4.2.0" />
       <PackageReference Include="SkiaSharp" Version="1.68.0" />
     </ItemGroup>
 
