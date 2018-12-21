@@ -64,7 +64,7 @@ namespace AdventOfCode.Days
             return registers[0];
         }
 
-        private static (string Op, int A, int B, int C, Action<int[]> Run) ParseCommand(string line)
+        public static (string Op, int A, int B, int C, Action<int[]> Run) ParseCommand(string line)
         {
             var parts = line.Split(" ");
             var instruction = Day16.Instructions[parts[0]];

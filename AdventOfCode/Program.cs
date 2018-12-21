@@ -31,6 +31,7 @@ namespace AdventOfCode
                 new Day18(),
                 new Day19(),
                 //new Day20(), // Really slow...
+                //new Day21(), // Part 2 slow :<
             };
             var sw = new Stopwatch();
             var part1Sw = new Stopwatch();
