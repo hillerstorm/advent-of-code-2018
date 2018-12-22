@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Priority_Queue;
 
 namespace AdventOfCode
 {
@@ -29,42 +28,32 @@ namespace AdventOfCode
             Func<T, T, float> graphCost)
             where T : IEquatable<T>
         {
-            var queue = new FastPriorityQueue<PathNode<T>>(short.MaxValue);
-            queue.Enqueue(new PathNode<T>(start), 0f);
+            var queue = new PriorityQueue<T>();
+            queue.Enqueue(start, 0f);
             var visited = new Dictionary<T, T> {{start, default}};
             var costs = new Dictionary<T, float> {{start, 0f}};
             while (queue.Count > 0)
             {
                 var current = queue.Dequeue();
-                if (current.Value.Equals(goal))
+                if (current.Equals(goal))
                     break;
 
-                foreach (var next in neighbours(current.Value))
+                foreach (var next in neighbours(current))
                 {
-                    var newCost = costs[current.Value] + graphCost(current.Value, next);
+                    var newCost = costs[current] + graphCost(current, next);
                     if (costs.ContainsKey(next) && !(newCost < costs[next]))
                         continue;
 
                     costs[next] = newCost;
                     var priority = newCost + heuristics(goal, next);
-                    queue.Enqueue(new PathNode<T>(next), priority);
-                    visited[next] = current.Value;
+                    queue.Enqueue(next, priority);
+                    visited[next] = current;
                 }
             }
 
             return !visited.ContainsKey(goal)
                 ? new T[] { }
                 : BuildPath(visited, start, goal);
-        }
-
-        private class PathNode<T> : FastPriorityQueueNode
-        {
-            public PathNode(T value)
-            {
-                Value = value;
-            }
-
-            public T Value { get; }
         }
 
         private static T[] BuildPath<T>(IReadOnlyDictionary<T, T> cameFrom, T start, T current)

@@ -1,38 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace AdventOfCode
 {
     public class PriorityQueue<T>
     {
-        private readonly SortedDictionary<float, Queue<T>> _queues = new SortedDictionary<float, Queue<T>>();
+        private readonly MinHeap<T> _minHeap;
+        private long _insertionOrder;
 
-        public int Count { get; private set; }
-
-        public void Enqueue(T item, float priority)
+        public PriorityQueue()
         {
-            if (!_queues.TryGetValue(priority, out var queue))
-            {
-                queue = new Queue<T>();
-                _queues.Add(priority, queue);
-            }
-
-            queue.Enqueue(item);
-            Count++;
+            _minHeap = new MinHeap<T>();
         }
 
-        public T Dequeue()
-        {
-            if (Count == 0 || _queues.Count == 0)
-                throw new InvalidOperationException();
+        public int Count =>
+            _minHeap.Size;
 
-            var queue = _queues.First();
-            var item = queue.Value.Dequeue();
-            Count--;
-            if (queue.Value.Count == 0)
-                _queues.Remove(queue.Key);
-            return item;
-        }
+        public void Enqueue(T item, float priority) =>
+            _minHeap.Insert(new HeapNode<T>(item, priority, _insertionOrder++));
+
+        public T Dequeue() =>
+            _minHeap.RemoveMin();
     }
 }
