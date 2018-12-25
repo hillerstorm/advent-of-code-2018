@@ -27,7 +27,7 @@ namespace AdventOfCode.Days
                             strongest.R);
         }
 
-        public static float Part2(IEnumerable<string> input) =>
+        public static int Part2(IEnumerable<string> input) =>
             -1;
 
         private static readonly Regex pattern = new Regex(@"(\-*\d+)");
