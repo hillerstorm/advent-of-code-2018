@@ -35,6 +35,7 @@ namespace AdventOfCode
                 new Day22(),
                 new Day23(),
                 new Day24(),
+                new Day25(),
             };
             var sw = new Stopwatch();
             var part1Sw = new Stopwatch();
