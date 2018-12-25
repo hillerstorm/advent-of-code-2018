@@ -3,21 +3,17 @@ using Xunit;
 
 namespace AdventOfCode.Tests
 {
-    public class Day5Tests
+    public class Day08Tests
     {
         [Fact]
         public void TestPart1()
         {
             var assertions = new[]
             {
-                ("aA", 0),
-                ("abBA", 0),
-                ("abAB", 4),
-                ("aabAAB", 6),
-                ("dabAcCaCBAcCcaDA", 10)
+                ("2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2", 138),
             };
             assertions.ForEach(((string Input, int Expected) x) =>
-                Assert.Equal(x.Expected, Day05.Part1(x.Input)));
+                Assert.Equal(x.Expected, Day08.Part1(x.Input.SplitAsInt(" "))));
         }
 
         [Fact]
@@ -25,10 +21,10 @@ namespace AdventOfCode.Tests
         {
             var assertions = new[]
             {
-                ("dabAcCaCBAcCcaDA", 4)
+                ("2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2", 66),
             };
             assertions.ForEach(((string Input, int Expected) x) =>
-                Assert.Equal(x.Expected, Day05.Part2(x.Input)));
+                Assert.Equal(x.Expected, Day08.Part2(x.Input.SplitAsInt(" "))));
         }
     }
 }

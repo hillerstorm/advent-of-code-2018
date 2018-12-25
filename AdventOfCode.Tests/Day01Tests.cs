@@ -3,7 +3,7 @@ using Xunit;
 
 namespace AdventOfCode.Tests
 {
-    public class Day1Tests
+    public class Day01Tests
     {
         [Fact]
         public void TestPart1()
