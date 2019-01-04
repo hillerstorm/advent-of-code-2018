@@ -33,7 +33,7 @@ namespace AdventOfCode
                 //new Day20(), // Really slow...
                 //new Day21(), // Part 2 slow :<
                 new Day22(),
-                new Day23(),
+                //new Day23(), // Part 2 slow :<
                 new Day24(),
                 new Day25(),
             };

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -83,8 +83,8 @@
 
     <ItemGroup>
       <PackageReference Include="Nito.Collections.Deque" Version="1.0.4" />
-      <PackageReference Include="OptimizedPriorityQueue" Version="4.2.0" />
       <PackageReference Include="SkiaSharp" Version="1.68.0" />
+      <PackageReference Include="Z3-20190104" Version="4.8.4" />
     </ItemGroup>
 
 </Project>
