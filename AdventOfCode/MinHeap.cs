@@ -37,7 +37,7 @@ namespace AdventOfCode
             if (Size == 0)
                 throw new IndexOutOfRangeException();
 
-            if (Size == 0)
+            if (Size == 1)
             {
                 Size--;
                 return _values[0].Value;
